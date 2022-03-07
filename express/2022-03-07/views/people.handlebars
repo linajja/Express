@@ -1,0 +1,25 @@
+<h2>Sveiki prisijungę, {{user}} </h2>
+
+
+{{#if zmones}}
+<table>
+    <thead>
+        <th>Vardas</th>
+        <th>Pavarde</th>
+        <th>Adresas</th>
+        <th>Telefonas</th>
+        <th>Elpastas</th>
+    </thead>
+    <tbody>
+        {{#each zmones }}
+        <tr>
+            <td>{{this.name}}</td>
+            <td>{{this.surname}}</td>
+            <td>{{this.adress}}</td>
+            <td>{{this.phone}}</td>
+            <td>{{this.email}}</td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+{{/if}}

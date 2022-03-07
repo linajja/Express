@@ -1,7 +1,6 @@
 {
   "name": "express",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "start": "nodemon ."
@@ -12,5 +11,7 @@
   "dependencies": {
     "express": "^4.17.3",
     "express-handlebars": "^6.0.3"
-  }
+  },
+  "keywords": [],
+  "description": ""
 }

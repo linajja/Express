@@ -4,13 +4,19 @@ import { fileURLToPath } from 'url'
 import { engine } from 'express-handlebars'
 import { faker } from '@faker-js/faker'
 import session from 'express-session'
+import multer from 'multer'
 
 const app = express()
+const upload = multer({ dest: 'uploads/' })
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
 app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
 app.set('views', './views');
+
+app.use(express.urlencoded({
+  extended: false
+}))
 
 app.use(session({
   secret: 'keyboard cat',
@@ -24,21 +30,28 @@ app.use(session({
 //Routeris
 
 
-app.get('/admin', function (req, res) {
-  res.redirect('/templates/admin.html')
-  return
+app.get('/login', function (req, res) {
+  let info = req.query.info
+  if (req.session.loggedIn === true) {
+    res.redirect('http://localhost:3005/people')
+    return
+  }
+  res.render('login', { info })
+
 })
 
 
 app.get('/login', function (req, res) {
 
-  let info = "";
-  if (Object.keys(req.query).length > 0) {
+  let info = "Įveskite prisijungimo duomenis";
 
-    if (req.query.login != '' &&
-      req.query.password != '' &&
-      req.query.login === "admin@inv.lt" &&
-      req.query.password === "1234") {
+  if (Object.keys(req.body).length > 0) {
+
+    if (req.body.login != '' &&
+      req.body.password != '' &&
+      req.body.login === "admin@inv.lt" &&
+      req.body.password === "1234") {
+
       req.session.loggedIn = true;
       req.session.userName = "admin@inv.lt";
 
@@ -49,8 +62,14 @@ app.get('/login', function (req, res) {
 
     }
   }
-  res.render('login', { info })
+  res.redirect('http://localhost:3005/login/?info=' + info)
+
 })
+
+// app.post('/login', function (req, res) {
+//   console.log(req.body);
+//   res.send('OK')
+// })
 
 let zmones = []
 app.get('/people', function (req, res) {
@@ -78,6 +97,29 @@ app.get('/people', function (req, res) {
   } else {
     res.redirect('/login')
   }
+})
+
+
+
+app.post('/post-upload', upload.single('photo'), function (req, res) {
+  console.log(req.file)
+  if (req.body.post_title != '' &&
+    req.body.post_content != '' &&
+    req.body.date != '') {
+    res.send(req.body)
+    return
+  } else {
+    res.send('Užpildyti ne visi laukeliai')
+    return
+  }
+})
+
+// Atsijungimo nuoroda
+
+app.get('/logout', function (req, res) {
+  req.session.loggedIn = null
+  req.session.userName = null
+  res.redirect('/login')
 })
 
 

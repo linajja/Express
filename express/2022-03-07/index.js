@@ -4,6 +4,7 @@ import { fileURLToPath } from 'url'
 import { engine } from 'express-handlebars'
 import { faker } from '@faker-js/faker'
 import session from 'express-session'
+
 const app = express()
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
@@ -22,42 +23,34 @@ app.use(session({
 
 //Routeris
 
-app.get('/', function (req, res) {
-  if (Object.keys(req.query).length > 0) {
-    res.render('login', {
-      pirma: req.query.vardas,
-      antra: req.query.pavarde,
-      trecia: req.query.adresas,
-      ketvirta: req.query.telefonas,
-      penkta: req.query.email
-    })
-    return
-  }
-  res.sendFile(__dirname + '/templates/index.html')
+
+app.get('/admin', function (req, res) {
+  res.redirect('/templates/admin.html')
+  return
 })
+
 
 app.get('/login', function (req, res) {
-  if (req.query.login != '' &&
-    req.query.password != '' &&
-    req.query.login === "admin@inv.lt" &&
-    req.query.password === "1234") {
-    req.session.loggedIn = true;
-    req.session.userName = "admin@inv.lt";
-    res.redirect('http://localhost:3000/people')
-    return
-  } else if (req.query.login != '' &&
-    req.query.password != '' &&
-    req.query.login != "admin@inv.lt" &&
-    req.query.password != "1234") {
-    let info = "Neteisingas el. pašto adresas arba slaptažodis"
-    res.render('person', { info })
-    return
-  } else {
-    res.redirect('http://localhost:3000')
-    return
-  }
-})
 
+  let info = "";
+  if (Object.keys(req.query).length > 0) {
+
+    if (req.query.login != '' &&
+      req.query.password != '' &&
+      req.query.login === "admin@inv.lt" &&
+      req.query.password === "1234") {
+      req.session.loggedIn = true;
+      req.session.userName = "admin@inv.lt";
+
+      res.redirect('http://localhost:3005/people')
+      return
+    } else {
+      info = "Neteisingas el. pašto adresas arba slaptažodis"
+
+    }
+  }
+  res.render('login', { info })
+})
 
 let zmones = []
 app.get('/people', function (req, res) {
@@ -67,11 +60,14 @@ app.get('/people', function (req, res) {
   if (req.session.loggedIn) {
 
     for (let i = 0; i < 100; i++) {
+      let adress = faker.address.streetAddress() + ', ' +
+        faker.address.city() + ', ' +
+        faker.address.country()
       zmones.push(
         {
           name: faker.name.firstName(),
           surname: faker.name.lastName(),
-          adress: faker.address.cityName(),
+          adress: adress,
           phone: faker.phone.phoneNumber(),
           email: faker.internet.email()
 

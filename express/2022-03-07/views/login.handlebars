@@ -1,25 +1,8 @@
-{{!-- 
-   <form class="all">
-        <label> Vardas:
-            <input type="text" name="vardas" value ={{pirma}}>
-        </label>
-        <label> Pavardė:
-            <input type="text" name="pavarde" value ={{antra}}>
-        </label>
-         <label> Adresas:
-            <input type="text" name="adresas" value ={{trecia}} >
-        </label>
-        <label> Telefonas:
-            <input type="text" name="telefonas" value ={{ketvirta}}>
-        </label>
-         <label> Email:
-            <input type="text" name="email" value ={{penkta}}>
-        </label>
-        <button type="submit">
-            Patvirtinti
-        </button>
-    </form> --}}
-
+{{#if info}}
+    <div style="background: red; padding: 5rem">
+        {{info}}
+    </div>
+{{/if}}
        <form class="all">
         <label> Prisijungimo vardas:
             <input type="text" name="login">

@@ -30,89 +30,121 @@ app.use(session({
 //Routeris
 
 
-app.get('/login', function (req, res) {
-  let info = req.query.info
-  if (req.session.loggedIn === true) {
-    res.redirect('http://localhost:3005/people')
-    return
-  }
-  res.render('login', { info })
+// app.get('/login', function (req, res) {
+//   let info = req.query.info
+//   if (req.session.loggedIn === true) {
+//     res.redirect('http://localhost:3005/people')
+//     return
+//   }
+//   res.render('login', { info })
 
-})
-
-
-app.get('/login', function (req, res) {
-
-  let info = "Įveskite prisijungimo duomenis";
-
-  if (Object.keys(req.body).length > 0) {
-
-    if (req.body.login != '' &&
-      req.body.password != '' &&
-      req.body.login === "admin@inv.lt" &&
-      req.body.password === "1234") {
-
-      req.session.loggedIn = true;
-      req.session.userName = "admin@inv.lt";
-
-      res.redirect('http://localhost:3005/people')
-      return
-    } else {
-      info = "Neteisingas el. pašto adresas arba slaptažodis"
-
-    }
-  }
-  res.redirect('http://localhost:3005/login/?info=' + info)
-
-})
-
-// app.post('/login', function (req, res) {
-//   console.log(req.body);
-//   res.send('OK')
 // })
 
-let zmones = []
-app.get('/people', function (req, res) {
 
-  // req.session.destroy()
+// app.get('/login', function (req, res) {
 
-  if (req.session.loggedIn) {
+//   let info = "Įveskite prisijungimo duomenis";
 
-    for (let i = 0; i < 100; i++) {
-      let adress = faker.address.streetAddress() + ', ' +
-        faker.address.city() + ', ' +
-        faker.address.country()
-      zmones.push(
-        {
-          name: faker.name.firstName(),
-          surname: faker.name.lastName(),
-          adress: adress,
-          phone: faker.phone.phoneNumber(),
-          email: faker.internet.email()
+//   if (Object.keys(req.body).length > 0) {
 
-        }
-      )
-      res.render('people', { zmones, user: req.session.userName })
+//     if (req.body.login != '' &&
+//       req.body.password != '' &&
+//       req.body.login === "admin@inv.lt" &&
+//       req.body.password === "1234") {
+
+//       req.session.loggedIn = true;
+//       req.session.userName = "admin@inv.lt";
+
+//       res.redirect('http://localhost:3005/people')
+//       return
+//     } else {
+//       info = "Neteisingas el. pašto adresas arba slaptažodis"
+
+//     }
+//   }
+//   res.redirect('http://localhost:3005/login/?info=' + info)
+
+// })
+
+// // app.post('/login', function (req, res) {
+// //   console.log(req.body);
+// //   res.send('OK')
+// // })
+
+// let zmones = []
+// app.get('/people', function (req, res) {
+
+//   // req.session.destroy()
+
+//   if (req.session.loggedIn) {
+
+//     for (let i = 0; i < 100; i++) {
+//       let adress = faker.address.streetAddress() + ', ' +
+//         faker.address.city() + ', ' +
+//         faker.address.country()
+//       zmones.push(
+//         {
+//           name: faker.name.firstName(),
+//           surname: faker.name.lastName(),
+//           adress: adress,
+//           phone: faker.phone.phoneNumber(),
+//           email: faker.internet.email()
+
+//         }
+//       )
+//       res.render('people', { zmones, user: req.session.userName })
+//     }
+//   } else {
+//     res.redirect('/login')
+//   }
+// })
+
+
+
+// app.post('/post-upload', upload.single('photo'), function (req, res) {
+//   console.log(req.file)
+//   if (req.body.post_title != '' &&
+//     req.body.post_content != '' &&
+//     req.body.date != '') {
+//     res.send(req.body)
+//     return
+//   } else {
+//     res.send('Užpildyti ne visi laukeliai')
+//     return
+//   }
+// })
+
+app.get('/postsave', function (req, res) {
+  let info = "Neteisingas el. pašto adresas arba slaptažodis"
+  if (req.session.loggedIn != true) {
+    res.render('postsave', { info })
+    return
+  }
+  res.redirect('http://localhost:3005/ataskaita')
+})
+
+app.get('/postsave', function (req, res) {
+  if (Object.keys(req.body).length > 0) {
+
+    if (req.body.postTitle === 'Ataskaita' &&
+      req.body.postContent === 'Viskas' &&
+      req.body.date === '2022-03-09') {
+      res.redirect('http://localhost:3005/ataskaita')
+      return
+    } else {
+      res.render('postsave')
     }
-  } else {
-    res.redirect('/login')
   }
+})
+
+app.get('/ataskaita', function (req, res) {
+  res.render('ataskaita')
 })
 
 
 
-app.post('/post-upload', upload.single('photo'), function (req, res) {
-  console.log(req.file)
-  if (req.body.post_title != '' &&
-    req.body.post_content != '' &&
-    req.body.date != '') {
-    res.send(req.body)
-    return
-  } else {
-    res.send('Užpildyti ne visi laukeliai')
-    return
-  }
-})
+
+
 
 // Atsijungimo nuoroda
 
